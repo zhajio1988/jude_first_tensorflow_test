@@ -65,22 +65,15 @@ def convert_to_one_hot(Y, C):
     return Y
 
 
-def predict(X, parameters):
+def predict(X, parameters, sess):
     
-    #W1 = tf.convert_to_tensor(parameters["W1"])
-    #b1 = tf.convert_to_tensor(parameters["b1"])
-    #W2 = tf.convert_to_tensor(parameters["W2"])
-    #b2 = tf.convert_to_tensor(parameters["b2"])
-    #W3 = tf.convert_to_tensor(parameters["W3"])
-    #b3 = tf.convert_to_tensor(parameters["b3"])
+    W1 = tf.convert_to_tensor(parameters["W1"])
+    b1 = tf.convert_to_tensor(parameters["b1"])
+    W2 = tf.convert_to_tensor(parameters["W2"])
+    b2 = tf.convert_to_tensor(parameters["b2"])
+    W3 = tf.convert_to_tensor(parameters["W3"])
+    b3 = tf.convert_to_tensor(parameters["b3"])
 
-    W1 = parameters["W1"]
-    b1 = parameters["b1"]
-    W2 = parameters["W2"]
-    b2 = parameters["b2"]
-    W3 = parameters["W3"]
-    b3 = parameters["b3"]    
-    
     params = {"W1": W1,
               "b1": b1,
               "W2": W2,
@@ -90,12 +83,9 @@ def predict(X, parameters):
     
     x = tf.placeholder("float", [12288, 1])
     
-    print(W1)
     z3 = forward_propagation_for_predict(x, params)
-    print(z3)
-    p = tf.argmax(z3)
+    p = tf.argmax(z3, 0)
     
-    sess = tf.Session()
     prediction = sess.run(p, feed_dict = {x: X})
         
     return prediction
@@ -167,14 +157,12 @@ def initialize_parameters():
     
     tf.set_random_seed(1)                   # so that your "random" numbers match ours
         
-    ### START CODE HERE ### (approx. 6 lines of code)
     W1 = tf.get_variable("W1", [25,12288], initializer = tf.contrib.layers.xavier_initializer(seed = 1))
     b1 = tf.get_variable('b1', [25,1], initializer = tf.zeros_initializer())
     W2 = tf.get_variable('W2', [12,25], initializer = tf.contrib.layers.xavier_initializer(seed = 1))
     b2 = tf.get_variable('b2', [12,1], initializer = tf.zeros_initializer())
     W3 = tf.get_variable('W3', [6,12], initializer = tf.contrib.layers.xavier_initializer(seed = 1))
     b3 = tf.get_variable('b3', [6,1], initializer = tf.zeros_initializer())
-    ### END CODE HERE ###
 
     parameters = {"W1": W1,
                   "b1": b1,

@@ -1,10 +1,15 @@
 import numpy as np
 import h5py
+import os
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow.python.framework import ops
 from tf_utils import load_dataset, random_mini_batches, convert_to_one_hot, predict, compute_cost, initialize_parameters
 from forward_prop import forward_propagation
+
+ckpt_dir = "./ckpt_dir"
+if not os.path.exists(ckpt_dir):
+    os.makedirs(ckpt_dir)
 
 def create_placeholders(n_x, n_y):
     """
@@ -31,7 +36,7 @@ def create_placeholders(n_x, n_y):
     return X, Y
 
 def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001,
-          num_epochs = 30, minibatch_size = 32, print_cost = True):
+          num_epochs = 1500, minibatch_size = 32, print_cost = True):
     """
     Implements a three-layer tensorflow neural network: LINEAR->RELU->LINEAR->RELU->LINEAR->SOFTMAX.
     
@@ -131,16 +136,16 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001,
 
         #save the model 
         saver = tf.train.Saver()
-        saver.save(sess, 'trained_model', global_step=10)
+        saver.save(sess, ckpt_dir + '/trained_model')
 
         #FIXME has error ValueError: None values not supported 
-        ## Calculate the correct predictions
-        #correct_prediction = tf.equal(tf.argmax(Z3), tf.argmax(Y))
+        # Calculate the correct predictions
+        correct_prediction = tf.equal(tf.argmax(Z3, 0), tf.argmax(Y, 0))
 
-        ## Calculate accuracy on the test set
-        #accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+        # Calculate accuracy on the test set
+        accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
 
-        #print ("Train Accuracy:", accuracy.eval({X: X_train, Y: Y_train}))
-        #print ("Test Accuracy:", accuracy.eval({X: X_test, Y: Y_test}))
+        print ("Train Accuracy:", accuracy.eval({X: X_train, Y: Y_train}))
+        print ("Test Accuracy:", accuracy.eval({X: X_test, Y: Y_test}))
         
         return parameters
