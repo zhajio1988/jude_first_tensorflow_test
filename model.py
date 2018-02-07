@@ -137,8 +137,6 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.0001,
         #save the model 
         saver = tf.train.Saver()
         saver.save(sess, ckpt_dir + '/trained_model')
-
-        #FIXME has error ValueError: None values not supported 
         # Calculate the correct predictions
         correct_prediction = tf.equal(tf.argmax(Z3, 0), tf.argmax(Y, 0))
 
